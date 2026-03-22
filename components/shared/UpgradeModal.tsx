@@ -46,10 +46,10 @@ export function UpgradeModal({
         >
           <X className="h-5 w-5" />
         </button>
-        <h2 className="text-2xl font-bold text-[#f5f5f3]">
+        <h2 className="text-center text-2xl font-bold text-[#f5f5f3]">
           {t('pricing')}
         </h2>
-        <p className="mt-2 text-[#888885]">
+        <p className="mt-2 text-center text-[#888885]">
           {t('monthly')} / {t('annual')} toggle — choose your plan.
         </p>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">

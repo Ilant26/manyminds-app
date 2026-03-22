@@ -39,7 +39,7 @@ export function PlanBillingModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/60 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -57,7 +57,7 @@ export function PlanBillingModal({
           <X className="h-5 w-5" />
         </button>
 
-        <h2 className="text-2xl font-bold text-neutral-900">Plan</h2>
+        <h2 className="text-center text-2xl font-bold text-neutral-900">Plan</h2>
 
         <div className="flex-1 overflow-y-auto pr-1">
           {/* 1) Usage */}
@@ -137,7 +137,7 @@ export function PlanBillingModal({
           {/* 3) Topups */}
           <section className="mt-4 rounded-2xl border border-neutral-200 bg-white p-3">
             <h3 className="text-lg font-semibold text-neutral-900 text-center">Top-ups</h3>
-            <p className="mt-1 text-sm text-neutral-600">
+            <p className="mt-1 text-center text-sm text-neutral-600">
               Add credits instantly without changing your subscription.
             </p>
 

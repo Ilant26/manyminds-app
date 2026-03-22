@@ -120,29 +120,29 @@ export function PaymentModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4">
       <div className="w-full max-w-lg rounded-2xl border border-neutral-200 bg-white shadow-xl">
-        <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
-          <div>
+        <div className="relative border-b border-neutral-200 px-5 py-4 pr-14">
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="text-center">
             <h2 className="text-base font-semibold text-neutral-900">
               {intent?.type === 'subscription' ? 'Upgrade plan' : 'Top up credits'}
             </h2>
             <p className="mt-0.5 text-sm text-neutral-500">Secure checkout powered by Stripe.</p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl p-2 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-800"
-            aria-label="Close"
-          >
-            <X className="h-5 w-5" />
-          </button>
         </div>
 
         <div className="px-5 py-5">
           {loadingSecret && (
-            <div className="text-sm text-neutral-600">Preparing secure payment…</div>
+            <div className="text-center text-sm text-neutral-600">Preparing secure payment…</div>
           )}
           {error && (
-            <div className="mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <div className="mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-800">
               {error}
             </div>
           )}
@@ -154,7 +154,7 @@ export function PaymentModal({
           )}
 
           {!stripePromise && (
-            <div className="text-sm text-neutral-700">
+            <div className="text-center text-sm text-neutral-700">
               Stripe publishable key is missing.
             </div>
           )}

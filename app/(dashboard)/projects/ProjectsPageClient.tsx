@@ -1135,27 +1135,27 @@ export default function ProjectsPageClient({
             setImportOpen(false);
           }}
         >
-          <div className="w-full max-w-2xl rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-neutral-900">Import from History</h3>
-              <button
-                type="button"
-                onClick={() => setImportOpen(false)}
-                className="rounded-lg p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
-                aria-label="Close"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mt-2 text-sm text-neutral-600">
+          <div className="relative w-full max-w-2xl rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl">
+            <button
+              type="button"
+              onClick={() => setImportOpen(false)}
+              className="absolute right-3 top-3 rounded-lg p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <h3 className="pr-10 text-center text-lg font-semibold text-neutral-900">Import from History</h3>
+            <p className="mt-2 text-center text-sm text-neutral-600">
               Select conversations to add to “{selected?.name}”.
             </p>
 
-            {importError ? <p className="mt-3 text-sm text-red-700">{importError}</p> : null}
+            {importError ? (
+              <p className="mt-3 text-center text-sm text-red-700">{importError}</p>
+            ) : null}
 
             <div className="mt-4 max-h-[50vh] overflow-auto rounded-xl border border-neutral-200">
               {history.length === 0 ? (
-                <div className="p-4 text-sm text-neutral-500">No conversations found.</div>
+                <div className="p-4 text-center text-sm text-neutral-500">No conversations found.</div>
               ) : (
                 <ul className="divide-y divide-neutral-200">
                   {history.map((d) => (
@@ -1268,7 +1268,7 @@ export default function ProjectsPageClient({
               />
             </div>
             {createProjectError ? (
-              <p className="mt-3 text-sm font-medium text-red-700">{createProjectError}</p>
+              <p className="mt-3 text-center text-sm font-medium text-red-700">{createProjectError}</p>
             ) : null}
 
             <div className="mt-6 flex gap-3">

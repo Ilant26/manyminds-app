@@ -124,7 +124,9 @@ export function DashboardShell({
                 />
               </div>
 
-              {ageError ? <p className="text-sm font-medium text-red-700">{ageError}</p> : null}
+              {ageError ? (
+                <p className="text-center text-sm font-medium text-red-700">{ageError}</p>
+              ) : null}
 
               <div className="flex gap-3">
                 <button

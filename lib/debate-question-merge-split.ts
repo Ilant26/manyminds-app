@@ -71,3 +71,25 @@ export function splitMergedQuestionParts(raw: string | null | undefined): string
 
   return [s0];
 }
+
+/**
+ * Message réduit à de la ponctuation « suite » sans mots : ?, ., …, espaces (réaction / relance implicite).
+ */
+export function isBareFollowUpSignal(s: string): boolean {
+  const t = s.trim();
+  if (!t) return false;
+  return /^[.?？…\s]+$/u.test(t);
+}
+
+/**
+ * Dernière question « réelle » dans une chaîne fusionnée (ignore les tours réduits à « ? » / « . » seuls).
+ */
+export function lastSubstantiveUserQuestionFromMerged(merged: string | null | undefined): string {
+  const parts = splitMergedQuestionParts(merged ?? '');
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]!.trim();
+    if (p && !isBareFollowUpSignal(p)) return p;
+  }
+  if (parts.length > 0) return parts[parts.length - 1]!.trim();
+  return (merged ?? '').trim();
+}

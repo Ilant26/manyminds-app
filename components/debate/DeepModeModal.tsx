@@ -11,8 +11,8 @@ export function DeepModeModal({ open, onConfirm, onCancel }: DeepModeModalProps)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-        <h2 className="text-xl font-bold text-neutral-900">Deep mode uses more credits</h2>
-        <p className="mt-3 text-neutral-500">
+        <h2 className="text-center text-xl font-bold text-neutral-900">Deep mode uses more credits</h2>
+        <p className="mt-3 text-center text-neutral-500">
           Deep mode is designed for complex questions and in-depth analysis.
           It uses <strong>5 credits</strong> instead of 1 — use it when you really need a thorough answer. For
           long documents like business plans, ManyMinds will automatically generate more content.

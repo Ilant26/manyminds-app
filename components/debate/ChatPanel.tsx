@@ -24,7 +24,7 @@ import { DisagreementFlag } from '@/components/debate/DisagreementFlag';
 import { DemoFrame } from '@/components/debate/DemoFrame';
 import { DeepModeModal } from '@/components/debate/DeepModeModal';
 import { UpgradeModal } from '@/components/shared/UpgradeModal';
-import { Inbox, Loader2, Maximize2, Minimize2, RefreshCw, X } from 'lucide-react';
+import { Loader2, Maximize2, Minimize2, RefreshCw, X } from 'lucide-react';
 import { cn, isChatRoutePath } from '@/lib/utils';
 import { createEmptyPanelSnapshotRecord } from '@/lib/chat-panel-empty-snapshot';
 import { formatChatPanelThreadForLinkedContext } from '@/lib/format-chat-panel-thread-for-sync';
@@ -172,7 +172,6 @@ export function ChatPanel({
   const [mode, setMode] = useState<'quick' | 'deep'>('quick');
   const [showDeepModal, setShowDeepModal] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
-  const [showArchiveInfo, setShowArchiveInfo] = useState(false);
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
   /** Chat: individual model answers hidden until user expands the section. */
   const [individualModelsOpen, setIndividualModelsOpen] = useState(false);
@@ -180,7 +179,7 @@ export function ChatPanel({
   const [turnHistory, setTurnHistory] = useState<ChatTurnSnapshot[]>([]);
   const [lastSubmitted, setLastSubmitted] = useState('');
   /**
-   * True après Close / Archive jusqu’à ce que le workspace parent soit bien vide (évite `initialQuestion` stale).
+   * True après Close jusqu’à ce que le workspace parent soit bien vide (évite `initialQuestion` stale).
    */
   const [ignoreWorkspaceBootstrap, setIgnoreWorkspaceBootstrap] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -426,7 +425,6 @@ export function ChatPanel({
     }
   }, [messageScrollLsKey, panelStorageKey, sessionScrollKey]);
 
-  const showArchiveButton = hasStarted;
   const showCloseButton = (hasStarted || showClose) && !isFullscreen;
   const isPlusOrAbove = true; // PDF export free for everyone (UI flag)
 
@@ -548,7 +546,7 @@ export function ChatPanel({
     didHydrateFromLocalRef.current = false;
 
     /**
-     * Reset explicite (Close / Archive) : à la mise à jour `initialDebateId → null`, cet effet
+     * Reset explicite (Close) : à la mise à jour `initialDebateId → null`, cet effet
      * relisait le LS (souvent réécrit par un flush) et réinjectait turnHistory + questions.
      */
     if (ignoreWorkspaceBootstrap) {
@@ -1359,34 +1357,6 @@ export function ChatPanel({
     onDebateStart(null, '');
   }, [messageScrollLsKey, sessionScrollKey, onDebateStart, reset]);
 
-  const handleArchive = useCallback(() => {
-    setIgnoreWorkspaceBootstrap(true);
-    shouldPersistOnUnmountRef.current = false;
-    try {
-      if (typeof window !== 'undefined') {
-        window.localStorage.removeItem(messageScrollLsKey);
-        window.sessionStorage.removeItem(sessionScrollKey);
-      }
-    } catch {
-      // ignore
-    }
-    scrollRestoreTargetRef.current = null;
-    didApplyScrollRestoreRef.current = true;
-    lastMessageScrollTopRef.current = 0;
-    if (scrollRef.current) scrollRef.current.scrollTop = 0;
-    reset();
-    setIndividualModelsOpen(false);
-    setQuestion('');
-    setMode('quick');
-    setLastSubmitted('');
-    setTurnHistory([]);
-    setShowArchiveInfo(false);
-    onDebateStart(null, '');
-    queueMicrotask(() => {
-      shouldPersistOnUnmountRef.current = true;
-    });
-  }, [messageScrollLsKey, sessionScrollKey, onDebateStart, reset]);
-
   const sessionRestoringOverlay =
     showSessionRecoveryOverlay ? (
       <div
@@ -1455,22 +1425,11 @@ export function ChatPanel({
                   <Maximize2 className="h-3.5 w-3.5" strokeWidth={2.25} />
                 </button>
               ) : null}
-              {showArchiveButton && (
-                <button
-                  type="button"
-                  onClick={() => setShowArchiveInfo(true)}
-                  title="Reset chat — panel stays open"
-                  className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white transition hover:bg-white/10"
-                >
-                  <Inbox className="h-3.5 w-3.5 text-white" />
-                  Archive
-                </button>
-              )}
               {showCloseButton && (
                 <button
                   type="button"
                   onClick={() => setShowCloseConfirm(true)}
-                  title={showClose ? 'Close this panel' : 'Reset chat'}
+                  title={showClose ? 'Close this panel' : 'Close conversation'}
                   className="rounded-lg p-1.5 font-bold text-white transition hover:bg-white/10"
                 >
                   <X className="h-4 w-4 stroke-[2.75] text-white" />
@@ -1678,47 +1637,38 @@ export function ChatPanel({
         }}
       />
 
-      {showArchiveInfo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="font-bold text-neutral-900">Clear this panel?</h3>
-            <p className="mt-2 text-sm text-neutral-500">
-              Resets this chat here; <strong>this panel stays open</strong>. Saved debates stay in{' '}
-              <strong>History</strong>.
-            </p>
-            <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowArchiveInfo(false)}
-                className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleArchive}
-                className="flex-1 rounded-xl bg-neutral-900 px-4 py-2 text-sm font-bold text-white hover:bg-neutral-800"
-              >
-                Clear pane
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {showCloseConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="font-bold text-neutral-900">
-              {showClose ? 'Close this panel?' : 'Clear this panel?'}
-            </h3>
-            <p className="mt-2 text-sm text-neutral-500">
+            <h3 className="text-center font-bold text-neutral-900">
               {showClose ? (
-                <>Removes this panel from the layout. Saved debates stay in History.</>
+                <>
+                  Close this panel{' '}?
+                </>
               ) : (
-                <>Resets this chat here. Saved debates stay in History.</>
+                <>
+                  Close this conversation{' '}?
+                </>
               )}
-            </p>
+            </h3>
+            <div className="mt-2 flex flex-col gap-2 text-center text-sm text-neutral-500">
+              {showClose ? (
+                <>
+                  <p>Are you sure{' '}?</p>
+                  <p>This panel will be removed from the layout.</p>
+                  <p>
+                    You can open this conversation again anytime from <strong>History</strong>.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>Are you sure you want to close it{' '}?</p>
+                  <p>
+                    This thread stays in <strong>History</strong> whenever you need it.
+                  </p>
+                </>
+              )}
+            </div>
             <div className="mt-4 flex gap-3">
               <button
                 type="button"
@@ -1747,7 +1697,7 @@ export function ChatPanel({
                 }}
                 className="flex-1 rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700"
               >
-                {showClose ? 'Close panel' : 'Clear panel'}
+                {showClose ? 'Close panel' : 'Close'}
               </button>
             </div>
           </div>

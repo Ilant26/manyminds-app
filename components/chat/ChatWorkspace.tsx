@@ -312,8 +312,8 @@ export function ChatWorkspace() {
       {isChatRoute && replaceModal.open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="font-bold text-neutral-900">Replace which conversation?</h3>
-            <p className="mt-2 text-sm text-neutral-600">
+            <h3 className="text-center font-bold text-neutral-900">Replace which conversation?</h3>
+            <p className="mt-2 text-center text-sm text-neutral-600">
               Both chat slots are in use. Pick which one to replace with this conversation. The other
               stays saved in History (and in its project if it belongs to one)—nothing is deleted.
             </p>

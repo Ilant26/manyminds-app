@@ -8,7 +8,7 @@ import { calculateConsensus } from '@/lib/ai/consensus';
 import { generateDeepSynthesisStream, generateSynthesis } from '@/lib/ai/synthesis';
 import { getSupabaseServer } from '@/lib/db/client';
 import { getUserByClerkId, incrementUserRequests } from '@/lib/db/users';
-import { DEBATE_QUESTION_MERGE_SEP } from '@/lib/debate-question-merge-split';
+import { DEBATE_QUESTION_MERGE_SEP, isBareFollowUpSignal } from '@/lib/debate-question-merge-split';
 import { buildThreadHistoryPrompt } from '@/lib/debate-thread-prompt';
 import { getDebateMergeState, saveDebate, updateDebate } from '@/lib/db/debates';
 import { triggerEmailSequence } from '@/lib/email/resend';
@@ -95,15 +95,38 @@ export async function POST(req: Request) {
       ? buildThreadHistoryPrompt(mergeForThreadPrompt.conversation_turns)
       : null;
 
-  let effectiveQuestion =
+  const baseFollowUp =
     mode === 'thread_deep' && context
       ? `Previous synthesis:\n${context}\n\nFollow-up question:\n${question}`
       : question;
 
-  if (threadHistory) {
-    effectiveQuestion =
-      `The user continues the same conversation. Use all prior turns for context, entities, and follow-ups.\n\n${threadHistory}\n\n---\nCurrent request:\n${effectiveQuestion}`;
+  const bare = isBareFollowUpSignal(question);
+
+  const followUpFromHistoryInstruction =
+    'The user only sent punctuation (such as "?", ".", or "…") with no other words. They may feel the last answer was cut off, have forgotten to type a real question, or not have understood. Using the conversation above—especially the latest user message and the latest ManyMinds consensus answer—infer what they need and respond directly.';
+
+  const waitingForInstructionsInstruction =
+    'The user only sent punctuation as their first input in this chat; there is no prior question or answer in this thread yet. Reply briefly in a normal, friendly way: say you are ready to help and ask what they would like to know or do.';
+
+  const linkedContextBareInstruction =
+    'The user only sent punctuation (e.g. "?" or ".") with no other words. Using the linked conversation context above, infer what follow-up they need (clarification, continuation if something seemed cut off, simpler wording, etc.) and respond helpfully.';
+
+  let currentRequest = baseFollowUp;
+  if (bare) {
+    if (threadHistory) {
+      currentRequest = followUpFromHistoryInstruction;
+    } else if (mode === 'thread_deep' && (context ?? '').trim()) {
+      currentRequest = `Previous synthesis:\n${context}\n\n${followUpFromHistoryInstruction}`;
+    } else if (memoryContextTrimmed) {
+      currentRequest = linkedContextBareInstruction;
+    } else {
+      currentRequest = waitingForInstructionsInstruction;
+    }
   }
+
+  let effectiveQuestion = threadHistory
+    ? `The user continues the same conversation. Use all prior turns for context, entities, and follow-ups.\n\n${threadHistory}\n\n---\nCurrent request:\n${currentRequest}`
+    : currentRequest;
 
   if (memoryContextTrimmed) {
     effectiveQuestion = `Context from a linked conversation:\n---\n${memoryContextTrimmed}\n---\n\nNew question: ${effectiveQuestion}`;
@@ -112,7 +135,7 @@ export async function POST(req: Request) {
   let optimalModels: AIModelConfig[] = [];
 
   try {
-    optimalModels = await getOptimalModels(question, plan, aiMode);
+    optimalModels = await getOptimalModels(effectiveQuestion, plan, aiMode);
   } catch {
     optimalModels = [];
   }

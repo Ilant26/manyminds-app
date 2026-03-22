@@ -2,6 +2,10 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
+import {
+  isBareFollowUpSignal,
+  lastSubstantiveUserQuestionFromMerged,
+} from '@/lib/debate-question-merge-split';
 import type {
   AIResponse,
   Debate,
@@ -72,6 +76,8 @@ export function useDebate() {
   const latestDebateIdRef = useRef<string | null>(null);
   const latestSynthesisRef = useRef('');
   const latestDebateTitleRef = useRef<string | null>(null);
+  /** Dernier message utilisateur « réel » (hors ponctuelle seule . / ? / …) — suivi sans debate_id côté API (ex. anonyme). */
+  const latestCompletedUserMessageRef = useRef('');
   latestDebateIdRef.current = state.debateId;
   latestSynthesisRef.current = state.synthesis;
   latestDebateTitleRef.current = state.debateTitle;
@@ -79,6 +85,7 @@ export function useDebate() {
   const hydrateFromDebate = useCallback((debate: Debate) => {
     setSynthesisStep('');
     persistedDebateIdRef.current = isPersistableDebateId(debate.id) ? debate.id : null;
+    latestCompletedUserMessageRef.current = lastSubstantiveUserQuestionFromMerged(debate.question);
     const rawTitle = debate.title?.trim();
     setState({
       status: 'done',
@@ -117,6 +124,19 @@ export function useDebate() {
         (isPersistableDebateId(latestDebateIdRef.current)
           ? latestDebateIdRef.current
           : null);
+
+      let outboundQuestion = question;
+      if (isBareFollowUpSignal(question) && !currentDebateId) {
+        const pq = latestCompletedUserMessageRef.current.trim();
+        const ps = latestSynthesisRef.current.trim();
+        if (pq || ps) {
+          outboundQuestion = `The user only sent punctuation (e.g. "?" or ".") with no other words—often because the answer felt cut off, they forgot a full question, or they need clarification. Use the previous question and the previous ManyMinds consensus answer below to infer what they want, then respond helpfully.\n\nPrevious question:\n${pq || '(none)'}\n\nPrevious answer:\n${ps || '(none)'}`;
+        }
+      }
+      if (!isBareFollowUpSignal(question)) {
+        latestCompletedUserMessageRef.current = question.trim();
+      }
+
       setSynthesisStep('');
       const keepDebateTitle =
         currentDebateId &&
@@ -214,7 +234,7 @@ export function useDebate() {
           headers: { 'Content-Type': 'application/json' },
           signal: ac.signal,
           body: JSON.stringify({
-            question,
+            question: outboundQuestion,
             mode: requestedMode,
             input_language: 'en',
             ...(opts?.projectId ? { project_id: opts.projectId } : {}),
@@ -307,6 +327,7 @@ export function useDebate() {
     abortRef.current?.abort();
     abortRef.current = null;
     persistedDebateIdRef.current = null;
+    latestCompletedUserMessageRef.current = '';
     setSynthesisStep('');
     setState(initialState);
   }, []);
@@ -317,6 +338,7 @@ export function useDebate() {
     persistedDebateIdRef.current = isPersistableDebateId(snap.debateId)
       ? snap.debateId
       : null;
+    latestCompletedUserMessageRef.current = lastSubstantiveUserQuestionFromMerged(snap.question);
     setState(snap);
   }, []);
 
