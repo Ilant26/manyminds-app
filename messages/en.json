@@ -1,0 +1,132 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "upgrade": "Upgrade",
+    "quotaReached": "Quota reached — Upgrade",
+    "quotaNear": "X conversations left this month — upgrade for more",
+    "tryForFree": "Try for free",
+    "getStarted": "Get started"
+  },
+  "dashboard": {
+    "title": "Chat",
+    "askQuestion": "Ask a question",
+    "placeholder": "Type your question...",
+    "submit": "Ask Manyminds",
+    "history": "History",
+    "settings": "Settings",
+    "upgrade": "Upgrade",
+    "debatesUsed": "{used} / {limit} conversations used this month"
+  },
+  "persona": {
+    "optimist": "Optimist",
+    "devil": "Devil's Advocate",
+    "expert": "Expert",
+    "optimistTooltip": "Focus on opportunities and best-case scenarios.",
+    "devilTooltip": "Challenge assumptions and surface risks.",
+    "expertTooltip": "Technical, precise, domain-expert style."
+  },
+  "voice": {
+    "record": "Record",
+    "recording": "Recording...",
+    "transcribing": "Transcribing...",
+    "done": "Done",
+    "error": "Voice error",
+    "notSupported": "Microphone not supported"
+  },
+  "chat": {
+    "errorQuotaExceeded": "Monthly quota reached. Upgrade your plan to continue.",
+    "errorAnonymousLimit": "Guest trial limit reached. Create an account to continue.",
+    "errorStreamInterrupted": "The response was cut off (connection or server). Try again in a moment.",
+    "errorNetwork": "Network error. Check your connection and try again.",
+    "errorRequestFailed": "Request failed. Try again."
+  },
+  "debate": {
+    "consensus": "Agreement",
+    "strongConsensus": "Very aligned",
+    "generalAgreement": "Mostly aligned",
+    "significantDisagreement": "Not very aligned",
+    "manymindsAnswer": "Manyminds Answer",
+    "viewDetails": "View details",
+    "hideDetails": "Hide details",
+    "viewModelAnswers": "View the AI answers",
+    "hideModelAnswers": "Hide AI answers",
+    "detailsIntro": "Here you’ll find each model’s full answer, and—when available—how aligned they were and any disagreements we detected.",
+    "detailsScoreFootnote": "This score compares how similar the answers are, not whether they’re factually correct. We don’t flag hallucinations automatically.",
+    "detailsEmptyHint": "Detail isn’t ready yet — wait a moment or close and reopen this section.",
+    "detailsSectionAgreement": "How similar the answers are",
+    "detailsSectionModels": "Each model’s answer",
+    "detailsAgreementLine": "{pct}% agreement — {label}.",
+    "agreementComputing": "Working out how much the models agreed…",
+    "agreementUnavailable": "No agreement score this time—compare the model answers below.",
+    "agreementRingTitle": "How much the models agreed (0–100%)",
+    "agreementSummary": "{pct}% agreement",
+    "disagreementTitle": "Different angles",
+    "disagreementTitleFallback": "Slightly different wording",
+    "disagreementLead": "On these topics the models stress different points — worth comparing:",
+    "disagreementLeadFallback": "No topic-by-topic breakdown this time — skim each answer above for nuances.",
+    "disagreementFallbackTitle": "A few different angles",
+    "disagreementFallbackBody": "The answers don’t line up word for word. Open each one to compare calmly.",
+    "collectiveIntelligence": "Collective Intelligence",
+    "share": "Share",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied to clipboard",
+    "pdfShort": "PDF",
+    "downloadPdf": "Download PDF",
+    "synthesisStatusTitle": "Synthesis",
+    "consensusPercent": "{pct}% agreement",
+    "pdfPlusOnly": "PDF export is available on Plus and above",
+    "latency": "{ms}ms"
+  },
+  "history": {
+    "title": "History",
+    "search": "Search conversations",
+    "loading": "Loading…",
+    "empty": "No conversations yet",
+    "runFirst": "Start your first conversation from Chat."
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "subscription": "Subscription",
+    "plan": "Plan",
+    "manageBilling": "Manage billing"
+  },
+  "marketing": {
+    "heroTitle1": "Many minds",
+    "heroTitle2": "One answer",
+    "heroSub": "Type or speak. 6 AIs analyze. Manyminds synthesizes.",
+    "cta": "Try for free",
+    "joinCount": "Join {count} users",
+    "howItWorks": "How it works",
+    "step1Title": "Ask",
+    "step1Desc": "Type or speak your question. Choose a persona (Optimist, Devil's Advocate, or Expert).",
+    "step2Title": "Debate",
+    "step2Desc": "Up to 6 AIs answer in parallel. We show how much they agree and where they differ.",
+    "step3Title": "Synthesize",
+    "step3Desc": "You get one clear answer. Open “View details” anytime to see agreement level, disagreements, and each model’s full reply.",
+    "comparison": "Compare",
+    "pricing": "Pricing",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "perMonth": "/mo",
+    "mostPopular": "Most popular",
+    "footerTagline": "Collective intelligence for better decisions.",
+    "footerLegal": "Legal",
+    "footerPrivacy": "Privacy"
+  },
+  "upgrade": {
+    "title": "Get more out of Manyminds",
+    "subtitle": "Upgrade to unlock more conversations and models.",
+    "currentPlan": "Current plan"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out"
+  }
+}

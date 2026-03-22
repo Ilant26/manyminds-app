@@ -1,0 +1,93 @@
+diff --git a/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-cookie-sync.js b/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-cookie-sync.js
+index ada77a3..43c56b1 100644
+--- a/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-cookie-sync.js
++++ b/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-cookie-sync.js
+@@ -41,9 +41,12 @@ function KeylessCookieSync(props) {
+   const isNotFoundRoute = ((_a = segments[0]) == null ? void 0 : _a.startsWith("/_not-found")) || false;
+   (0, import_react.useEffect)(() => {
+     if (import_feature_flags.canUseKeyless && !isNotFoundRoute) {
++      const { claimUrl, publishableKey, secretKey } = props;
+       void import("../keyless-actions.js").then(
+         (m) => m.syncKeylessConfigAction({
+-          ...props,
++          claimUrl,
++          publishableKey,
++          secretKey,
+           // Preserve the current url and return back, once keys are synced in the middleware
+           returnUrl: window.location.href
+         })
+diff --git a/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-creator-reader.js b/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-creator-reader.js
+index c363c0e..9557598 100644
+--- a/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-creator-reader.js
++++ b/node_modules/@clerk/nextjs/dist/cjs/app-router/client/keyless-creator-reader.js
+@@ -33,19 +33,20 @@ __export(keyless_creator_reader_exports, {
+ module.exports = __toCommonJS(keyless_creator_reader_exports);
+ var import_navigation = require("next/navigation");
+ var import_react = __toESM(require("react"));
+-var import_keyless_actions = require("../keyless-actions");
+ const KeylessCreatorOrReader = (props) => {
+   var _a;
+   const { children } = props;
+   const segments = (0, import_navigation.useSelectedLayoutSegments)();
+   const isNotFoundRoute = ((_a = segments[0]) == null ? void 0 : _a.startsWith("/_not-found")) || false;
+-  const [state, fetchKeys] = import_react.default.useActionState(import_keyless_actions.createOrReadKeylessAction, null);
++  const [state, setState] = (0, import_react.useState)(null);
+   (0, import_react.useEffect)(() => {
+     if (isNotFoundRoute) {
+       return;
+     }
+     import_react.default.startTransition(() => {
+-      fetchKeys();
++      void import("../keyless-actions.js").then((m) => {
++        void m.createOrReadKeylessAction().then(setState);
++      });
+     });
+   }, [isNotFoundRoute]);
+   if (!import_react.default.isValidElement(children)) {
+diff --git a/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-cookie-sync.js b/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-cookie-sync.js
+index 4f9f80b..138a198 100644
+--- a/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-cookie-sync.js
++++ b/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-cookie-sync.js
+@@ -9,9 +9,12 @@ function KeylessCookieSync(props) {
+   const isNotFoundRoute = ((_a = segments[0]) == null ? void 0 : _a.startsWith("/_not-found")) || false;
+   useEffect(() => {
+     if (canUseKeyless && !isNotFoundRoute) {
++      const { claimUrl, publishableKey, secretKey } = props;
+       void import("../keyless-actions.js").then(
+         (m) => m.syncKeylessConfigAction({
+-          ...props,
++          claimUrl,
++          publishableKey,
++          secretKey,
+           // Preserve the current url and return back, once keys are synced in the middleware
+           returnUrl: window.location.href
+         })
+diff --git a/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-creator-reader.js b/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-creator-reader.js
+index 6eb91d4..9c9b8d1 100644
+--- a/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-creator-reader.js
++++ b/node_modules/@clerk/nextjs/dist/esm/app-router/client/keyless-creator-reader.js
+@@ -1,19 +1,20 @@
+ import "../../chunk-BUSYA2B4.js";
+ import { useSelectedLayoutSegments } from "next/navigation";
+-import React, { useEffect } from "react";
+-import { createOrReadKeylessAction } from "../keyless-actions";
++import React, { useEffect, useState } from "react";
+ const KeylessCreatorOrReader = (props) => {
+   var _a;
+   const { children } = props;
+   const segments = useSelectedLayoutSegments();
+   const isNotFoundRoute = ((_a = segments[0]) == null ? void 0 : _a.startsWith("/_not-found")) || false;
+-  const [state, fetchKeys] = React.useActionState(createOrReadKeylessAction, null);
++  const [state, setState] = useState(null);
+   useEffect(() => {
+     if (isNotFoundRoute) {
+       return;
+     }
+     React.startTransition(() => {
+-      fetchKeys();
++      void import("../keyless-actions.js").then((m) => {
++        void m.createOrReadKeylessAction().then(setState);
++      });
+     });
+   }, [isNotFoundRoute]);
+   if (!React.isValidElement(children)) {

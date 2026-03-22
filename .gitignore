@@ -1,0 +1,45 @@
+# Ne jamais versionner une copie de .git (évite des centaines de Mo sur GitHub)
+.git-backup/
+
+# Dépendances & build (ne jamais pousser sur GitHub)
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Environnement & secrets
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug / OS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.pem
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Tests / couverture
+coverage/
+.nyc_output/
+
+# Vercel
+.vercel
+
+# Misc
+*.tsbuildinfo
+
+# clerk configuration (can include secrets)
+/.clerk/
