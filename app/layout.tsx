@@ -13,6 +13,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: 'Manyminds — Many minds One answer',
   description: 'Type or speak. 6 AIs analyze. Manyminds synthesizes.',
+  /** Évite la barre Google Translate (Chrome) : contenu utilisateur multilingue + `lang="en"` sur l’app. */
+  other: {
+    google: 'notranslate',
+  },
 };
 
 export const dynamic = 'force-dynamic';
@@ -28,6 +32,7 @@ export default async function RootLayout({
     <ClerkProvider>
       <html
         lang={locale ?? 'en'}
+        translate="no"
         className={cn('font-sans', inter.variable)}
         suppressHydrationWarning
       >

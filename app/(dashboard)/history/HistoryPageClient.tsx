@@ -606,6 +606,7 @@ export default function HistoryPageClient({
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
+      <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-3xl flex-col overflow-hidden">
       <div className="shrink-0 space-y-6">
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-3xl font-bold text-neutral-900">{t('title')}</h1>
@@ -1268,6 +1269,7 @@ export default function HistoryPageClient({
           </div>
         </div>
       ) : null}
+      </div>
     </div>
   );
 }
